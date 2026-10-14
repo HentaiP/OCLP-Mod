@@ -19,16 +19,16 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 
-# To allow easy importing of OCLP-Mod's utilities
+# To allow easy importing of OpenCore Legacy Patcher's utilities
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-from oclp_mod.support import (
+from opencore_legacy_patcher.support import (
     macos_installer_handler,
     network_handler,
     integrity_verification,
     utilities,
 )
-from oclp_mod.datasets import os_data
+from opencore_legacy_patcher.datasets import os_data
 
 
 _DEFAULT_PATH: str = "/Volumes/macOS Installers"
@@ -60,6 +60,7 @@ class InstallerBackup:
             os_data.os_data.ventura:  Path(self._directory, "13 Ventura"),
             os_data.os_data.sonoma:   Path(self._directory, "14 Sonoma"),
             os_data.os_data.sequoia:  Path(self._directory, "15 Sequoia"),
+            os_data.os_data.tahoe:    Path(self._directory, "26 Tahoe"),
         }
 
         for os_version in self._supported_oses:

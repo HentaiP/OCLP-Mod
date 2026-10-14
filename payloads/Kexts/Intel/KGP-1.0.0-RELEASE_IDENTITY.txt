@@ -1,0 +1,17 @@
+AirportItlwm-Tahoe 1.0.0 — release-qualified frozen binary
+Bundle: AirportItlwm.kext
+Executable: AirportItlwm
+CFBundleIdentifier: com.zxystd.AirportItlwm
+CFBundleShortVersionString / CFBundleVersion: 1.0.0 / 1.0.0
+Target/configuration/architecture: AirportItlwm-Tahoe / Release / x86_64
+LC_UUID: 7039DFF1-232B-3697-8E6E-8EE505044F28
+Executable SHA-256: 1202ec9bf855e944f59cc3742a90c0cf1a0a292642dfe7ed8d091a1a9c435811
+Info.plist SHA-256: 05f027cc5978593c3542942488f27537fe5fb04c48b3817d7ec5025d3bc1c288
+Signing: unsigned, as physically qualified; no signing operation during packaging.
+No rebuild occurred between 26.6.2 AppleVTD, 26.6.2 conventional comparison,
+and additional scoped 26.7 AppleVTD testing. Package creation changes neither
+qualified binary bytes nor bundle identity. ZIP records original bundle Unix
+modification times to whole-second ZIP extended-timestamp precision; original
+on-disk bundle timestamps are untouched. File names, modes and bytes preserved.
+Official source: https://github.com/kgp-macPro/AirportItlwm-Tahoe
+This is the frozen release binary, not an unqualified CI build.

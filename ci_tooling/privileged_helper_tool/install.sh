@@ -11,7 +11,7 @@
 
 # MARK: Variables
 # ---------------------------
-helperName="com.laobamac.oclp-mod.privileged-helper"
+helperName="com.dortania.opencore-legacy-patcher.privileged-helper"
 helperPath="/Library/PrivilegedHelperTools/$helperName"
 
 # MARK: Functions

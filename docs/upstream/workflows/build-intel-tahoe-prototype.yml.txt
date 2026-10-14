@@ -1,0 +1,23 @@
+name: Manual Intel Tahoe prototype (unsigned)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15-intel
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install build dependencies
+        run: python3 -m pip install -r requirements.txt
+      - name: Test real Intel detection and EFI code
+        run: python3 tests/test_intel_tahoe.py
+      - name: Build unsigned prototype
+        run: python3 Build-Project.command
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Intel-Tahoe-prototype-unsigned
+          path: dist/

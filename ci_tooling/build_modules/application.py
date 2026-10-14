@@ -5,13 +5,13 @@ import subprocess
 
 from pathlib import Path
 
-from oclp_mod.volume  import generate_copy_arguments
-from oclp_mod.support import subprocess_wrapper
+from opencore_legacy_patcher.volume  import generate_copy_arguments
+from opencore_legacy_patcher.support import subprocess_wrapper
 
 
 class GenerateApplication:
     """
-    Generate OCLP-Mod.app
+    Generate OpenCore-Patcher.app
     """
 
     def __init__(self, reset_pyinstaller_cache: bool = False, git_branch: str = None, git_commit_url: str = None, git_commit_date: str = None, analytics_key: str = None, analytics_endpoint: str = None) -> None:
@@ -19,7 +19,7 @@ class GenerateApplication:
         Initialize
         """
         self._pyinstaller = [sys.executable, "-m", "PyInstaller"]
-        self._application_output = Path("./dist/OCLP-Mod.app")
+        self._application_output = Path("./dist/OpenCore-Patcher.app")
 
         self._reset_pyinstaller_cache = reset_pyinstaller_cache
 
@@ -38,8 +38,8 @@ class GenerateApplication:
         if self._application_output.exists():
             subprocess_wrapper.run_and_verify(["/bin/rm", "-rf", self._application_output], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        print("Generating OCLP-Mod.app")
-        _args = self._pyinstaller + ["./OCLP-Mod-GUI.spec", "--noconfirm"]
+        print("Generating OpenCore-Patcher.app")
+        _args = self._pyinstaller + ["./OpenCore-Patcher-GUI.spec", "--noconfirm"]
         if self._reset_pyinstaller_cache:
             _args.append("--clean")
 
@@ -50,7 +50,7 @@ class GenerateApplication:
         """
         Embed analytics key
         """
-        _file = Path("./oclp_mod/support/analytics_handler.py")
+        _file = Path("./opencore_legacy_patcher/support/analytics_handler.py")
 
         if not all([self._analytics_key, self._analytics_endpoint]):
             print("Analytics key or endpoint not provided, skipping embedding")
@@ -78,7 +78,7 @@ class GenerateApplication:
         """
         Remove analytics key
         """
-        _file = Path("./oclp_mod/support/analytics_handler.py")
+        _file = Path("./opencore_legacy_patcher/support/analytics_handler.py")
 
         if not all([self._analytics_key, self._analytics_endpoint]):
             return
@@ -110,14 +110,14 @@ class GenerateApplication:
         and instead we're able to support 10.10 without issues.
 
         To verify set version:
-          otool -l ./dist/OCLP-Mod.app/Contents/MacOS/OCLP-Mod
+          otool -l ./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
 
               cmd LC_VERSION_MIN_MACOSX
           cmdsize 16
           version 10.13
               sdk 10.9
         """
-        _file = self._application_output / "Contents" / "MacOS" / "OCLP-Mod"
+        _file = self._application_output / "Contents" / "MacOS" / "OpenCore-Patcher"
 
         _find    = b'\x00\x0D\x0A\x00' # 10.13 (0xA0D)
         _replace = b'\x00\x0A\x0A\x00' # 10.10 (0xA0A)
@@ -130,6 +130,7 @@ class GenerateApplication:
         with open(_file, "wb") as f:
             f.write(data)
 
+
     def _patch_sdk_version(self) -> None:
         """
         Patch LC_BUILD_VERSION in Load Command to report the macOS 26 SDK
@@ -137,7 +138,7 @@ class GenerateApplication:
         This will enable the Solarium refresh when running on macOS 26
         Minor visual anomalies and padding issues exist, disable if not addressed before release
         """
-        _file = self._application_output / "Contents" / "MacOS" / "OCLP-Mod"
+        _file = self._application_output / "Contents" / "MacOS" / "OpenCore-Patcher"
 
         _find    = b'\x00\x01\x0C\x00'
         _replace = b'\x00\x00\x1A\x00'
@@ -145,7 +146,7 @@ class GenerateApplication:
         print("Patching LC_BUILD_VERSION")
         with open(_file, "rb") as f:
             data = f.read()
-            data = data.replace(_find, _replace, 1)
+            data = data.replace(_find, _replace)
 
         with open(_file, "wb") as f:
             f.write(data)
@@ -182,20 +183,29 @@ class GenerateApplication:
             )
 
         subprocess_wrapper.run_and_verify(
-        generate_copy_arguments("payloads/Icon/AppIcons/Assets.car", self._application_output / "Contents/Resources/"),
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            generate_copy_arguments("payloads/Icon/AppIcons/Assets.car", self._application_output / "Contents/Resources/"),
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
 
     def generate(self) -> None:
         """
-        Generate OCLP-Mod.app
+        Generate OpenCore-Patcher.app
         """
         self._embed_analytics_key()
         self._generate_application()
         self._remove_analytics_key()
 
         self._patch_load_command()
-        self._patch_sdk_version()
+        self._patch_sdk_version() if not self._git_branch or not self._git_branch.startswith('refs/tags') else None
         self._embed_git_data()
         self._embed_resources()
+        # 2026-10-14: PyInstaller's initial ad-hoc seal precedes the SDK,
+        # metadata and resource edits above. Reseal the finished local App;
+        # this is not Developer ID signing or notarization. A configured
+        # release signing step can still replace this ad-hoc signature.
+        print("Ad-hoc signing completed application bundle")
+        subprocess_wrapper.run_and_verify([
+            "/usr/bin/codesign", "--force", "--deep", "--sign", "-",
+            str(self._application_output),
+        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

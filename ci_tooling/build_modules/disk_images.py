@@ -6,8 +6,8 @@ import subprocess
 
 from pathlib import Path
 
-from oclp_mod import constants
-from oclp_mod.support import subprocess_wrapper
+from opencore_legacy_patcher import constants
+from opencore_legacy_patcher.support import subprocess_wrapper
 
 
 
@@ -77,7 +77,7 @@ class GenerateDiskImages:
             '-megabytes', '32000',  # Overlays can only be as large as the disk image allows
             '-format', 'UDZO', '-ov',
             '-volname', 'OpenCore Patcher Resources (Base)',
-            '-fs', 'APFS',
+            '-fs', 'HFS+',
             '-layout', 'NONE',
             '-srcfolder', './payloads',
             '-passphrase', 'password', '-encryption'
@@ -117,7 +117,7 @@ class GenerateDiskImages:
             subprocess_wrapper.run_and_verify(
                 [
                     "/usr/bin/curl", "-LO",
-                    f"https://github.com/laobamac/PatcherSupportPkg/releases/download/2.0.0/Universal-Binaries.dmg"
+                    f"https://github.com/dortania/PatcherSupportPkg/releases/download/{patcher_support_pkg_version}/{resource}"
                 ],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )

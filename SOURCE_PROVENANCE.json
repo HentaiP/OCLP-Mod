@@ -1,0 +1,21 @@
+{
+  "publication_mode": "direct GitHub fork; source/manifests only",
+  "fork_parent": {
+    "repository": "https://github.com/laobamac/OCLP-Mod",
+    "commit": "63555b94610c74703a000058ac6876f65b92e638"
+  },
+  "official_base": {
+    "repository": "https://github.com/dortania/OpenCore-Legacy-Patcher",
+    "commit": "8da38565fa1551a8e5ce8613ea835d04dd97e089",
+    "version": "3.0.0 development source"
+  },
+  "validated_private_source_tree": "25f400aea0095b304dc26ab2d103272a7a68a01a",
+  "support_package": {
+    "version": "2.0.3",
+    "sha256": "cf2a80deafe153ed4a9aa32c63463032e02718f32713e9b3f0a6e09f9a6ffbab"
+  },
+  "binary_publication": false,
+  "new_intel_archives_git_tracked": false,
+  "intel_bluetooth_2_5_0_corresponding_source": "unresolved; not redistributed",
+  "testing_report": "native build records plus separate maintainer-reported testing; see VALIDATION.md"
+}

@@ -1,5 +1,5 @@
 CC=clang
-OUTPUT=com.laobamac.oclp-mod.privileged-helper
+OUTPUT=com.dortania.opencore-legacy-patcher.privileged-helper
 
 all: clean release
 

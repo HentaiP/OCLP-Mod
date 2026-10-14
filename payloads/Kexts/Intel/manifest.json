@@ -1,0 +1,42 @@
+{
+  "profile": "KGP 1.0.0 on Tahoe / Ventura 2.3.0 on older build hosts; Bluetooth 2.5.0 fixed",
+  "payloads": [
+    {
+      "archive": "AirportItlwm-Ventura-v2.3.0.zip",
+      "bundle": "AirportItlwm.kext",
+      "version": "2.3.0",
+      "sha256": "2814b213c465b349d6360ba3b006ff39bf910d7e275ebc9446cc16844c706eea"
+    },
+    {
+      "archive": "IntelBluetoothFirmware-v2.5.0.zip",
+      "bundle": "IntelBluetoothFirmware.kext",
+      "version": "2.5.0",
+      "sha256": "eba58da8f32081352cb19fd67da84f91a1c48842326db0d327ae399aacf7b516"
+    },
+    {
+      "archive": "IntelBTPatcher-v2.5.0.zip",
+      "bundle": "IntelBTPatcher.kext",
+      "version": "2.5.0",
+      "sha256": "4444967e7ef3dd6d01ed465ebea2227d1d83a1fa6311ba7c5a4c65f1f05cf21e"
+    },
+    {
+      "archive": "BlueToolFixup-v2.7.2.zip",
+      "bundle": "BlueToolFixup.kext",
+      "version": "2.7.2",
+      "sha256": "135148c233f2ce7aecac98245b8a12b46d418e34312df28487c232b8bd1f107f"
+    },
+    {
+      "archive": "AirportItlwm-Tahoe-v1.0.0.zip",
+      "bundle": "AirportItlwm.kext",
+      "version": "1.0.0",
+      "sha256": "ba7e2a1e08debcdd195aacdc1cd81261a91dd4860b13068465a52ed5b9c6dc36",
+      "source": "https://github.com/kgp-macPro/AirportItlwm-Tahoe",
+      "official_release_archive_sha256": "1b97713cf5c7918b7a7f114c7210a1ed79b81eb586ad7300fc4ba1430f4a8c5f",
+      "official_bundle_files": {
+        "Contents/Info.plist": "05f027cc5978593c3542942488f27537fe5fb04c48b3817d7ec5025d3bc1c288",
+        "Contents/MacOS/AirportItlwm": "1202ec9bf855e944f59cc3742a90c0cf1a0a292642dfe7ed8d091a1a9c435811"
+      },
+      "repackaging": "root bundle only; original binary bytes preserved"
+    }
+  ]
+}

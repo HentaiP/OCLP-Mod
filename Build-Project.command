@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build-Project.command: Generate OCLP-Mod.app and OCLP-Mod.pkg
+Build-Project.command: Generate OpenCore-Patcher.app and OpenCore-Patcher.pkg
 """
 
 import os
@@ -18,13 +18,12 @@ from ci_tooling.build_modules import (
 )
 
 
-
 def main() -> None:
     """
     Parse Command Line Arguments
     """
 
-    parser = argparse.ArgumentParser(description="Build OCLP-Mod Suite", add_help=False)
+    parser = argparse.ArgumentParser(description="Build OpenCore Legacy Patcher Suite", add_help=False)
 
     # Signing Parameters
     parser.add_argument("--application-signing-identity", type=str, help="Application Signing Identity")
@@ -79,14 +78,14 @@ def main() -> None:
     if (args.run_as_individual_steps is False) or (args.run_as_individual_steps and args.prepare_application):
         # Prepare Privileged Helper Tool
         sign_notarize.SignAndNotarize(
-            path=Path("./ci_tooling/privileged_helper_tool/com.laobamac.oclp-mod.privileged-helper"),
+            path=Path("./ci_tooling/privileged_helper_tool/com.dortania.opencore-legacy-patcher.privileged-helper"),
             signing_identity=args.application_signing_identity,
             notarization_apple_id=args.notarization_apple_id,
             notarization_password=args.notarization_password,
             notarization_team_id=args.notarization_team_id,
         ).sign_and_notarize()
 
-        # Build OCLP-Mod.app
+        # Build OpenCore-Patcher.app
         application.GenerateApplication(
             reset_pyinstaller_cache=args.reset_pyinstaller_cache,
             git_branch=args.git_branch,
@@ -96,9 +95,9 @@ def main() -> None:
             analytics_endpoint=args.analytics_endpoint,
         ).generate()
 
-        # Sign OCLP-Mod.app
+        # Sign OpenCore-Patcher.app
         sign_notarize.SignAndNotarize(
-            path=Path("dist/OCLP-Mod.app"),
+            path=Path("dist/OpenCore-Patcher.app"),
             signing_identity=args.application_signing_identity,
             notarization_apple_id=args.notarization_apple_id,
             notarization_password=args.notarization_password,
@@ -108,26 +107,27 @@ def main() -> None:
 
 
     if (args.run_as_individual_steps is False) or (args.run_as_individual_steps and args.prepare_package):
-        # Build OCLP-Mod.pkg and OCLP-Mod-Uninstaller.pkg
+        # Build OpenCore-Patcher.pkg and OpenCore-Patcher-Uninstaller.pkg
         package.GeneratePackage().generate()
 
-        # Sign OCLP-Mod.pkg
+        # Sign OpenCore-Patcher.pkg
         sign_notarize.SignAndNotarize(
-            path=Path("dist/OCLP-Mod.pkg"),
+            path=Path("dist/OpenCore-Patcher.pkg"),
             signing_identity=args.installer_signing_identity,
             notarization_apple_id=args.notarization_apple_id,
             notarization_password=args.notarization_password,
             notarization_team_id=args.notarization_team_id,
         ).sign_and_notarize()
 
-        # Sign OCLP-Mod-Uninstaller.pkg
+        # Sign OpenCore-Patcher-Uninstaller.pkg
         sign_notarize.SignAndNotarize(
-            path=Path("dist/OCLP-Mod-Uninstaller.pkg"),
+            path=Path("dist/OpenCore-Patcher-Uninstaller.pkg"),
             signing_identity=args.installer_signing_identity,
             notarization_apple_id=args.notarization_apple_id,
             notarization_password=args.notarization_password,
             notarization_team_id=args.notarization_team_id,
         ).sign_and_notarize()
+
 
 if __name__ == '__main__':
     _start = time.time()

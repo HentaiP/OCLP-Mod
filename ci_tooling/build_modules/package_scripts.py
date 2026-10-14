@@ -105,6 +105,37 @@ class ZSHFunctions:
         return _script
 
 
+    def generate_create_alias(self) -> str:
+        """
+        ZSH function to create alias
+        """
+
+        _script = ""
+
+        _script += "function _createAlias() {\n"
+        _script += "    local mainPath=$1\n"
+        _script += "    local aliasPath=$2\n\n"
+
+        _script += "    # Check if alias path exists\n"
+        _script += "    if [[ -e $aliasPath ]]; then\n"
+        _script += "        # Check if alias path is a symbolic link\n"
+        _script += "        if [[ -L $aliasPath ]]; then\n"
+        _script += "            echo \"Removing old symbolic link: $aliasPath\"\n"
+        _script += "            /bin/rm -f $aliasPath\n"
+        _script += "        else\n"
+        _script += "            echo \"Removing old file: $aliasPath\"\n"
+        _script += "            /bin/rm -rf $aliasPath\n"
+        _script += "        fi\n"
+        _script += "    fi\n\n"
+
+        _script += "    # Create symbolic link\n"
+        _script += "    echo \"Creating symbolic link: $aliasPath\"\n"
+        _script += "    /bin/ln -s $mainPath $aliasPath\n"
+        _script += "}\n"
+
+        return _script
+
+
     def generate_start_patching(self) -> str:
         """
         ZSH function to start patching
@@ -145,7 +176,7 @@ class ZSHFunctions:
         _script = ""
 
         _script += "function _fixSettingsFilePermission() {\n"
-        _script += "    local settingsPath=\"$pathToTargetVolume/Users/Shared/.com.laobamac.oclp-mod.plist\"\n\n"
+        _script += "    local settingsPath=\"$pathToTargetVolume/Users/Shared/.com.dortania.opencore-legacy-patcher.plist\"\n\n"
 
         _script += "    if [[ -e $settingsPath ]]; then\n"
         _script += "        echo \"Fixing settings file permissions: $settingsPath\"\n"
@@ -202,7 +233,7 @@ class ZSHFunctions:
         _script = ""
 
         _script += "function _cleanLaunchService() {\n"
-        _script += "    local domain=\"com.laobamac.oclp-mod\"\n\n"
+        _script += "    local domain=\"com.dortania.opencore-legacy-patcher\"\n\n"
 
         _script += "    # Iterate over launch agents and daemons\n"
         _script += "    for launchServiceVariant in \"$pathToTargetVolume/Library/LaunchAgents\" \"$pathToTargetVolume/Library/LaunchDaemons\"; do\n"
@@ -250,6 +281,7 @@ class ZSHFunctions:
 
         _script += "function _main() {\n"
         _script += "    _setSUIDBit \"$pathToTargetVolume/$helperPath\"\n"
+        _script += "    _createAlias \"$pathToTargetVolume/$mainAppPath\" \"$pathToTargetVolume/$shimAppPath\"\n"
         _script += "    _prewarmGatekeeper \"$pathToTargetVolume/$mainAppPath\"\n"
         if is_autopkg:
             _script += "    _startPatching \"$pathToTargetVolume/$executablePath\"\n"
@@ -283,14 +315,14 @@ class GenerateScripts:
         self.zsh_functions = ZSHFunctions()
 
         self.files = [
-            "Library/Application Support/laobamac/Update.plist",
-            "Library/Application Support/laobamac/OCLP-Mod.app",
-            "Library/PrivilegedHelperTools/com.laobamac.oclp-mod.privileged-helper",
-            "Applications/OCLP-Mod.app"
+            "Applications/OpenCore-Patcher.app",
+            "Library/Application Support/Dortania/Update.plist",
+            "Library/Application Support/Dortania/OpenCore-Patcher.app",
+            "Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
         ]
 
         self.additional_auto_pkg_files = [
-            "Library/LaunchAgents/com.laobamac.oclp-mod.auto-patch.plist"
+            "Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"
         ]
 
 
@@ -325,7 +357,7 @@ class GenerateScripts:
         _script += self.__generate_shebang()
 
         _script += self._generate_header_bar()
-        _script += f"# {'AutoPkg Assets' if is_autopkg else 'OCLP-Mod'} Preinstall Script\n"
+        _script += f"# {'AutoPkg Assets' if is_autopkg else 'OpenCore Legacy Patcher'} Preinstall Script\n"
         _script += self._generate_header_bar()
         _script += "# Remove old files, and prepare directories.\n"
         _script += self._generate_header_bar()
@@ -380,12 +412,12 @@ class GenerateScripts:
         _script += self.__generate_shebang()
 
         _script += self._generate_header_bar()
-        _script += f"# {'AutoPkg Assets' if is_autopkg else 'OCLP-Mod'} Post Install Script\n"
+        _script += f"# {'AutoPkg Assets' if is_autopkg else 'OpenCore Legacy Patcher'} Post Install Script\n"
         _script += self._generate_header_bar()
         if is_autopkg:
-            _script += "# Set UID, start patching, and reboot.\n"
+            _script += "# Set UID, create alias, start patching, and reboot.\n"
         else:
-            _script += "# Set SUID bit on helper tool.\n"
+            _script += "# Set SUID bit on helper tool, and create app alias.\n"
         _script += self._generate_header_bar()
         _script += "\n\n"
 
@@ -396,10 +428,11 @@ class GenerateScripts:
         _script += self._generate_label_bar()
         _script += "\n"
 
-        _script += "helperPath=\"Library/PrivilegedHelperTools/com.laobamac.oclp-mod.privileged-helper\"\n"
-        _script += "mainAppPath=\"Library/Application Support/laobamac/OCLP-Mod.app\"\n"
+        _script += "helperPath=\"Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper\"\n"
+        _script += "mainAppPath=\"Library/Application Support/Dortania/OpenCore-Patcher.app\"\n"
+        _script += "shimAppPath=\"Applications/OpenCore-Patcher.app\"\n"
         if is_autopkg:
-            _script += "executablePath=\"$mainAppPath/Contents/MacOS/OCLP-Mod\"\n"
+            _script += "executablePath=\"$mainAppPath/Contents/MacOS/OpenCore-Patcher\"\n"
 
         _script += "\n\n"
 
@@ -408,6 +441,8 @@ class GenerateScripts:
         _script += "\n"
 
         _script += self.zsh_functions.generate_set_suid_bit()
+        _script += "\n"
+        _script += self.zsh_functions.generate_create_alias()
         _script += "\n"
         _script += self.zsh_functions.generate_prewarm_gatekeeper()
         _script += "\n"
@@ -442,9 +477,9 @@ class GenerateScripts:
         _script += self.__generate_shebang()
 
         _script += self._generate_header_bar()
-        _script += f"# OCLP-Mod Uninstall Script\n"
+        _script += f"# OpenCore Legacy Patcher Uninstall Script\n"
         _script += self._generate_header_bar()
-        _script += "# Remove OCLP-Mod files and directories.\n"
+        _script += "# Remove OpenCore Legacy Patcher files and directories.\n"
         _script += self._generate_header_bar()
         _script += "\n\n"
 

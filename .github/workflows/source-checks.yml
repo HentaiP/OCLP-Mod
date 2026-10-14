@@ -1,0 +1,19 @@
+name: Manual fork source checks (no publication)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check source syntax without native imports
+        run: python3 -m compileall -q opencore_legacy_patcher ci_tooling tests tools
+      - name: Parse publication and fixed-input manifests
+        run: |
+          python3 -m json.tool SOURCE_PROVENANCE.json > /dev/null
+          python3 -m json.tool payloads/Kexts/Intel/manifest.json > /dev/null

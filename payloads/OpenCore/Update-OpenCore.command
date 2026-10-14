@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Script to download and generate valid OpenCorePkg folder/file structure for use with oclp-mod
+# Script to download and generate valid OpenCorePkg folder/file structure for use with OpenCore-Legacy-Patcher
 # To use:
 # - Download OpenCore-{VERSION}-{VARIANT}.zip
 #   - If no files are found, the script will download the latest version
@@ -52,19 +52,19 @@ UNUSED_DRIVERS = [
     "UefiPxeBcDxe.efi",
     "RngDxe.efi",
     "TlsDxe.efi",
+    "Udp6Dxe.efi",
     "Hash2DxeCrypto.efi",
     "Dhcp6Dxe.efi",
     "Ip6Dxe.efi",
     "Mtftp4Dxe.efi",
-    "Mtftp6Dxe.efi",
     "RamDiskDxe.efi",
-    "Udp6Dxe.efi",
+    "Mtftp6Dxe.efi",
     "OpenNetworkBoot.efi",
     "VirtioSerialDxe.efi",
     "VirtioBlkDxe.efi",
     "VirtioPciDeviceDxe.efi",
-    "VirtioGpuDxe.efi",
     "VirtioNetDxe.efi",
+    "VirtioGpuDxe.efi",
     "VirtioScsiDxe.efi",
     "Virtio10.efi",
 ]
@@ -190,7 +190,7 @@ class GenerateOpenCore:
         print(f"   Getting latest {variant} download url...")
         for asset in latest_release["assets"]:
             if asset["name"].endswith(f"{variant}.zip"):
-                download_url = "https://download.simplehac.cn/" + asset["browser_download_url"]
+                download_url = asset["browser_download_url"]
                 print(f"   Download url: {download_url}")
                 break
 
