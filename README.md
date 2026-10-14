@@ -1,5 +1,7 @@
 # OCLP-Mod — Intel Tahoe fork
 
+**Powered by HentaiP feat. Maha**
+
 A source-available, non-commercial OCLP-Mod fork integrating the official
 Tahoe development baseline with guarded Intel Wi-Fi support. This is an
 independent fork, not an official release or an endorsement by any upstream author.

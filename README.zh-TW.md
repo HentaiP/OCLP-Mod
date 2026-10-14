@@ -1,5 +1,7 @@
 # OCLP-Mod — Intel Tahoe fork
 
+**Powered by HentaiP feat. Maha**
+
 以 OCLP-Mod 的 GitHub fork 為定位，整合官方 Tahoe 開發基底與受限的 Intel 無線支援。
 這是獨立分支，不代表 Dortania、laobamac 或 KGP 的官方發行或背書。
 
