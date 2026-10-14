@@ -17,3 +17,7 @@ jobs:
         run: |
           python3 -m json.tool SOURCE_PROVENANCE.json > /dev/null
           python3 -m json.tool payloads/Kexts/Intel/manifest.json > /dev/null
+      - name: Install source-test dependencies (no native macOS packages)
+        run: python3 -m pip install packaging requests
+      - name: Run public-checkout safety regressions (no private payloads)
+        run: python3 tests/test_fork_safety.py

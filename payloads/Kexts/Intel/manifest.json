@@ -1,5 +1,5 @@
 {
-  "profile": "KGP 1.0.0 on Tahoe / Ventura 2.3.0 on older build hosts; Bluetooth 2.5.0 fixed",
+  "profile": "KGP 1.0.0 on Darwin 25 / Ventura 2.3.0 on Darwin 24 build hosts only; Bluetooth 2.5.0 fixed",
   "payloads": [
     {
       "archive": "AirportItlwm-Ventura-v2.3.0.zip",

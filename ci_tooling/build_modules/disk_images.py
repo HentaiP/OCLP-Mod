@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 
 from opencore_legacy_patcher import constants
-from opencore_legacy_patcher.support import subprocess_wrapper
+from opencore_legacy_patcher.support import subprocess_wrapper, intel_wifi_payloads
 
 
 
@@ -61,10 +61,9 @@ class GenerateDiskImages:
         """
 
         if Path("./payloads.dmg").exists():
-            if self.reset_dmg_cache is False:
-                print("- payloads.dmg already exists, skipping creation")
-                return
-
+            # The source-only checkout gains Intel inputs after import. An old
+            # image may omit them or contain a previous profile; always rebuild
+            # this local image from the just-verified payload directory.
             print("- Removing old payloads.dmg")
             subprocess_wrapper.run_and_verify(
                 ["/bin/rm", "-rf", "./payloads.dmg"],
@@ -91,7 +90,9 @@ class GenerateDiskImages:
         Download required dependencies
         """
 
-        patcher_support_pkg_version = constants.Constants().patcher_support_pkg_version
+        build_constants = constants.Constants()
+        patcher_support_pkg_version = build_constants.patcher_support_pkg_version
+        expected_hash = build_constants.patcher_support_pkg_sha256
         required_resources = [
             "Universal-Binaries.dmg"
         ]
@@ -109,22 +110,27 @@ class GenerateDiskImages:
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE
                     )
                 else:
-                    print(f"- {resource} already exists, skipping download")
+                    if intel_wifi_payloads.sha256_file(Path(resource)) != expected_hash:
+                        raise ValueError(f"Cached {resource} SHA256 mismatch; use --reset-dmg-cache to redownload")
+                    print(f"- {resource} SHA256 verified, skipping download")
                     continue
 
             print(f"- Downloading {resource}...")
 
-            subprocess_wrapper.run_and_verify(
-                [
-                    "/usr/bin/curl", "-LO",
-                    f"https://github.com/dortania/PatcherSupportPkg/releases/download/{patcher_support_pkg_version}/{resource}"
-                ],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE
-            )
-
-            if not Path(f"./{resource}").exists():
-                print(f"- {resource} not found")
-                raise Exception(f"{resource} not found")
+            # Never promote HTTP error pages or interrupted downloads to a
+            # reusable support image. The original official URL is preserved.
+            partial = Path(resource + ".part")
+            try:
+                subprocess_wrapper.run_and_verify(
+                    ["/usr/bin/curl", "--fail", "--location", "--output", str(partial),
+                     f"https://github.com/dortania/PatcherSupportPkg/releases/download/{patcher_support_pkg_version}/{resource}"],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
+                if intel_wifi_payloads.sha256_file(partial) != expected_hash:
+                    raise ValueError(f"Downloaded {resource} SHA256 mismatch")
+                partial.replace(resource)
+            finally:
+                partial.unlink(missing_ok=True)
 
 
     def generate(self) -> None:
@@ -132,6 +138,8 @@ class GenerateDiskImages:
         Generate disk images
         """
 
+        # Reject an incomplete source checkout before downloads or cleanup.
+        intel_wifi_payloads.verify_pinned_payloads(Path("payloads/Kexts/Intel"))
         self._delete_extra_binaries()
         self._generate_payloads_dmg()
         self._download_resources()

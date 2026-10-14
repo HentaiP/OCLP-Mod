@@ -29,6 +29,18 @@ class UpdateFrame(wx.Frame):
     Create a frame for updating the patcher
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: wx.Point, url: str = "", version_label: str = "") -> None:
+        if not global_constants.allow_patcher_updates:
+            # Also protect direct entry / explicit URLs, not just update polling.
+            # Initialize a hidden frame so EntryPoint can safely destroy it.
+            super(UpdateFrame, self).__init__(parent, title=title)
+            wx.MessageBox("This source-only fork has no binary update channel. "
+                          "Build updates from " + global_constants.fork_repo_link,
+                          "Fork updates", wx.OK | wx.ICON_INFORMATION)
+            if parent is None:
+                wx.CallAfter(self.Close)
+            else:
+                self.Destroy()
+            return
         logging.info("Initializing Update Frame")
         if parent:
             self.parent: wx.Frame = parent

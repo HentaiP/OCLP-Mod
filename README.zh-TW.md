@@ -15,7 +15,8 @@ This product includes software developed by Dortania and OCLP contributors.
 
 - 保留官方 Tahoe 圖形、USB、無線 patch 字典與安全檢查，使用 PatcherSupportPkg 2.0.3。
 - Intel PCI 白名單 87 項；不是每張卡都已做實機驗收，BE200 不包含。
-- Tahoe 建置主機選 KGP AirportItlwm-Tahoe 正式 1.0.0；較舊主機選 Ventura 2.3.0。
+- Tahoe／Darwin 25 建置主機選 KGP AirportItlwm-Tahoe 正式 1.0.0；Sequoia／Darwin 24 主機選 Ventura 2.3.0。
+- 兩個 AirportItlwm profile 分別限制於 Darwin 25／24；其他建置主機核心版本直接拒絕，不猜測驅動。
 - IntelBluetoothFirmware／IntelBTPatcher 固定 2.5.0，BlueToolFixup 基準 2.7.2。
 - payload 雜湊與版本檢查維持 fail-closed，不略過安全 preflight 或未知 plugin 拒絕。
 - 保留最後重新 ad-hoc 簽章與 compiled CLI 產出的 EFI 在程式結束後仍留存的修正。
@@ -31,6 +32,11 @@ This product includes software developed by Dortania and OCLP contributors.
 本包只有原始碼與固定 manifest；Intel 新增二進位 payload 須另行取得並通過匯入工具的雜湊檢查。
 現有 Intel Bluetooth 2.5.0 二進位的精確源碼版本尚未核實，不在公開包內散布。
 不能把主機 OS 判斷當成外接目標機的 OS；新產生的 EFI 也不會自動合併既有 picker／多系統設定。
+
+本 fork 沒有二進位更新頻道：已停用官方 App／nightly 更新與安裝媒體的官方 AutoPkg 自動夾帶，
+避免覆蓋 Intel 修改版。macOS 安裝媒體不含自動 root patcher，私有編譯版需另外安裝。
+官方 PatcherSupportPkg／KDK 等支援資產來源保留；建置會驗證 2.0.3 支援映像的固定 SHA256。
+公開安全回歸測試不依賴私人驅動；原有完整 Intel 測試仍需五份精確輸入。
 
 OCLP-Mod 上游已於 2026 年 6 月宣告封存。本分支保留其公開歷史與所有來源授權；
 不保留其整套中文介面或 SimpleHacAPI 服務，也不將衍生部分重新宣稱為不受限制的 BSD／MIT。

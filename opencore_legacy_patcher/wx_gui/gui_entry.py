@@ -66,6 +66,10 @@ class EntryPoint:
 
         self._generate_base_data()
 
+        if entry is SupportedEntryPoints.UPDATE_APP and not self.constants.allow_patcher_updates:
+            logging.info("This source-only fork has no binary update channel; opening the main menu")
+            entry = SupportedEntryPoints.MAIN_MENU
+
         if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv or start_patching is True :
             entry = gui_sys_patch_start.SysPatchStartFrame
             patches = HardwarePatchsetDetection(constants=self.constants).device_properties

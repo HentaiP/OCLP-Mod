@@ -17,5 +17,20 @@
   "binary_publication": false,
   "new_intel_archives_git_tracked": false,
   "intel_bluetooth_2_5_0_corresponding_source": "unresolved; not redistributed",
-  "testing_report": "native build records plus separate maintainer-reported testing; see VALIDATION.md"
+  "testing_report": "native build records plus separate maintainer-reported testing; see VALIDATION.md",
+  "post_publication_audit": {
+    "date": "2026-10-14",
+    "scope": "source-only corrections; native build evidence above predates these changes",
+    "known_intel_host_kernels": [
+      24,
+      25
+    ],
+    "upstream_binary_updates": false,
+    "upstream_installer_autopkg": false,
+    "local_regressions": {
+      "fixed_input": 13,
+      "public_checkout": 25
+    },
+    "native_rebuild_performed": false
+  }
 }

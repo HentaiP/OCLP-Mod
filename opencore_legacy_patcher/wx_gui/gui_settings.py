@@ -203,6 +203,7 @@ class SettingsFrame(wx.Frame):
                     button = wx.Button(panel, label=setting, pos=(width + 25, 10 + height), size = (200,-1))
                     button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
                     button.Bind(wx.EVT_BUTTON, lambda event, variable=setting: self.settings[tab][variable]["function"](event))
+                    button.Enable(setting_info.get("condition", True))
                     height += 10
 
                 else:
@@ -781,10 +782,10 @@ class SettingsFrame(wx.Frame):
                 "Install latest nightly build 🧪": {
                     "type": "button",
                     "function": self.on_nightly,
+                    "condition": self.constants.allow_patcher_updates,
                     "description": [
-                        "If you're already here, I assume you're ok",
-                        "bricking your system 🧱.",
-                        "Check CHANGELOG before blindly updating.",
+                        "Unavailable in this source-only fork.",
+                        "Upstream binaries do not contain this Intel profile.",
                     ],
                 },
                 "Trigger Exception": {
@@ -1221,6 +1222,10 @@ Hardware Information:
 
 
     def on_nightly(self, event: wx.Event) -> None:
+        if not self.constants.allow_patcher_updates:
+            wx.MessageBox("This fork has no nightly binary update channel.",
+                          "Fork updates", wx.OK | wx.ICON_INFORMATION)
+            return
         # Ask prompt for which branch
         branches = ["main"]
         if self.constants.commit_info[0] not in ["Running from source", "Built from source"]:

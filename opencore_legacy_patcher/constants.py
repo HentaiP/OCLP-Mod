@@ -17,6 +17,11 @@ class Constants:
         self.patcher_support_pkg_version:     str = "2.0.3"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and OpenCore Legacy Patcher contributors"
         self.patcher_name:                    str = "OCLP-Mod - Intel Tahoe fork"
+        # There is no binary update channel for this source-only fork. Never
+        # replace it (or seed installer media) with the upstream application.
+        self.allow_patcher_updates:          bool = False
+        self.fork_repo_link:                  str = "https://github.com/HentaiP/OCLP-Mod"
+        self.patcher_support_pkg_sha256:      str = "cf2a80deafe153ed4a9aa32c63463032e02718f32713e9b3f0a6e09f9a6ffbab"
 
         # URLs
         self.url_patcher_support_pkg:         str = "https://github.com/dortania/PatcherSupportPkg/releases/download/"

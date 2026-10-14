@@ -92,13 +92,17 @@ class BuildWirelessNetworking:
 
     def _intel_wireless(self) -> None:
         """Supply the legacy stack and frozen Intel payloads, without BCM spoofing."""
+        kernel = self.constants.detected_os
+        if kernel not in (os_data.os_data.sequoia, os_data.os_data.tahoe):
+            raise ValueError("The fixed Intel profile requires a Sequoia (Darwin 24) "
+                             "or Tahoe (Darwin 25) build host; refusing to guess a driver.")
         intel_wifi_payloads.verify_pinned_payloads(self.constants.payload_kexts_path / "Intel")
         builder = support.BuildSupport(self.model, self.constants, self.config)
         builder.enable_kext("IOSkywalkFamily.kext", self.constants.ioskywalk_version, self.constants.ioskywalk_path)
         builder.enable_kext("IO80211FamilyLegacy.kext", self.constants.io80211legacy_version, self.constants.io80211legacy_path)
         builder.get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.iokit.IOSkywalkFamily")["Enabled"] = True
         # 2026-10-14: match the qualified reference Tahoe driver, retaining the
-        # original Ventura profile for builds performed on older macOS hosts.
+        # original Ventura compatibility profile for Sequoia build hosts.
         is_tahoe = self.constants.detected_os == os_data.os_data.tahoe
         airport_version = self.constants.intel_airportitlwm_tahoe_version if is_tahoe else self.constants.intel_airportitlwm_version
         airport_path = self.constants.intel_airportitlwm_tahoe_path if is_tahoe else self.constants.intel_airportitlwm_path
@@ -110,13 +114,11 @@ class BuildWirelessNetworking:
             ("BlueToolFixup.kext", self.constants.intel_bluetoolfixup_version, self.constants.intel_bluetoolfixup_path),
         ):
             builder.enable_kext(bundle, version, payload)
-        if is_tahoe:
-            # The frozen KGP release is qualified for Darwin 25, not arbitrary
-            # older/newer kernels. Selection follows the build host OS; this
-            # prototype does not infer an external machine's destination OS.
-            airport = builder.get_kext_by_bundle_path("AirportItlwm.kext")
-            airport["MinKernel"] = "25.0.0"
-            airport["MaxKernel"] = "25.99.99"
+        # Both variants are restricted to the selected build-host profile.
+        # Do not inject the Ventura compatibility binary into Tahoe/future OSes.
+        airport = builder.get_kext_by_bundle_path("AirportItlwm.kext")
+        airport["MinKernel"] = f"{int(kernel)}.0.0"
+        airport["MaxKernel"] = f"{int(kernel)}.99.99"
         nvram = self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]
         nvram.setdefault("bluetoothExternalDongleFailed", bytes(1))
         nvram.setdefault("bluetoothInternalControllerInfo", bytes(14))

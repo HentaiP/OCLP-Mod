@@ -32,7 +32,8 @@ of Mod's Chinese interface or SimpleHacAPI services.
 - Intel recognition restricted to **87 PCI IDs** from the pinned driver matchers;
   detection is eligibility, not a guarantee for every listed card. BE200 is excluded.
 - Darwin 25 build hosts select **KGP AirportItlwm-Tahoe 1.0.0**, gated to Darwin 25;
-  older build hosts select **AirportItlwm Ventura 2.3.0**.
+  Darwin 24 hosts select **AirportItlwm Ventura 2.3.0**, gated to Darwin 24.
+  Other build-host kernels are rejected for this Intel profile rather than guessed.
 - **IntelBluetoothFirmware / IntelBTPatcher 2.5.0** remain fixed;
   BlueToolFixup **2.7.2** is the tested baseline.
 - Payload hash/version checks fail closed. Existing root-patch security checks,
@@ -57,10 +58,15 @@ exact-matching payloads with `tools/import_intel_payloads.py`; it never updates
 versions or bypasses hashes. Exact source provenance for the existing Bluetooth
 2.5.0 binaries is not yet established, so those binaries are not redistributed here.
 
-Inherited updater/support URLs still refer to the original OCLP project;
-this source snapshot does not provide its own binary update channel.
+This source fork has **no binary update channel**. Upstream application updates,
+nightly installation and automatic upstream AutoPkg inclusion on macOS installer
+media are disabled, so they cannot silently replace this Intel profile.
+Install the privately built fork separately; installer media does not carry an
+automatic root patcher. Official PatcherSupportPkg, KDK and other support-asset
+sources are retained; the build verifies PatcherSupportPkg 2.0.3's pinned SHA256.
 
-Only an explicitly manual, non-publishing source-check workflow is active. Native
+Only an explicitly manual, non-publishing source-check workflow is active. It also
+runs public-checkout safety tests without private driver inputs. Native
 builds use the local instructions and separately acquired inputs. No CI run,
 live EFI installation, root patch or reboot is initiated by this source package.
 

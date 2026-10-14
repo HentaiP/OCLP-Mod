@@ -224,6 +224,7 @@ class GenerateDefaults:
             elif (
                 isinstance(self.constants.computer.wifi, device_probe.IntelWirelessCard)
                 and self.constants.computer.wifi.chipset == device_probe.IntelWirelessCard.Chipsets.IntelWirelessIDs
+                and self.constants.detected_os in (os_data.os_data.sequoia, os_data.os_data.tahoe)
             ):
                 is_modern_wifi = True
 

@@ -87,8 +87,9 @@ class CheckBinaryUpdates:
             dict: Dictionary with Link and Version of the latest binary update if available
         """
 
-        if self.constants.special_build is True:
-            # Special builds do not get updates through the updater
+        if not self.constants.allow_patcher_updates or self.constants.special_build is True:
+            # Do not replace this fork with an unrelated upstream binary.
+            # Version comparisons elsewhere remain active for bootloader checks.
             return None
 
         if self.latest_details:

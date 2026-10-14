@@ -417,6 +417,9 @@ class macOSInstallerFlashFrame(wx.Frame):
             - When running from source/unable to find on Github, use the nightly.link variant
             - If nightly also fails, fall back to the manually uploaded variant
         """
+        if not self.constants.allow_patcher_updates:
+            logging.info("Source-only fork: not downloading upstream AutoPkg-Assets.pkg")
+            return
         link = self.constants.installer_pkg_url
         if network_handler.NetworkUtilities(link).validate_link() is False:
             logging.info("Stock Install.pkg is missing on Github, falling back to Nightly")
@@ -445,6 +448,10 @@ class macOSInstallerFlashFrame(wx.Frame):
 
 
     def _install_installer_pkg(self, disk):
+        if not self.constants.allow_patcher_updates:
+            # A stale package from an earlier run must not bypass the download guard.
+            logging.info("Source-only fork: installer media will not contain an automatic root patcher")
+            return
         disk = disk + "s2" # ESP sits at 1, and we know macOS will have created the main partition at 2
 
         if not Path(self.constants.installer_pkg_path).exists():

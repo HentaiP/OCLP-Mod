@@ -34,7 +34,7 @@ testing, separately from the build evidence above. The message did not provide
 a per-feature install/reboot trace, so this repository does not invent one or
 claim a complete graphics/Bluetooth/sleep-wake/AirDrop certification matrix.
 
-## Publication snapshot
+## Original publication snapshot
 
 This source snapshot adds neutral branding, privacy-clean comments, current
 documents, preserved notices and manual-only automation to the validated build
@@ -43,3 +43,18 @@ security guards and fixed payload hashes remain unchanged. It has not been
 recompiled as a renamed App; the private binaries are not published here.
 Local publication checks and source hashes are delivered alongside the source
 package, without publishing private build logs or identities.
+
+## Post-publication source audit — 2026-10-14
+
+The subsequent audit narrows Intel host eligibility to Darwin 24/25, bounds the
+Sequoia injection kernel range, isolates upstream App/nightly/AutoPkg updates,
+verifies support-image hashes, rebuilds local payload images after verification,
+and makes the importer stage and publish validated copies with rollback.
+
+These are **source changes after the native build above**; that App/Pkg was not
+rebuilt, reinstalled or reboot-tested as part of this audit. GUI boundary tests
+use a fake wx layer; they do not establish native visual or lifecycle QA.
+The original 13 fixed-input tests and 25 added public-checkout tests are separate
+suites. The latter use synthetic archives and mocked download/native boundaries;
+they do not certify actual downloads, drivers or support DMG mounting on macOS.
+The public checkout's 25 tests also run in the manual source-check workflow.

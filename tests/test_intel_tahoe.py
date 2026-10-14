@@ -162,6 +162,9 @@ class IntelTahoeTests(unittest.TestCase):
                 info = plistlib.loads(z.read('AirportItlwm.kext/Contents/Info.plist'))
             self.assertEqual(info['CFBundleVersion'], '2.3.0')
             self.assertFalse((const.kexts_path / 'AirportItlwm-Tahoe-v1.0.0.zip').exists())
+            airport = next(row for row in config['Kernel']['Add'] if row['BundlePath'] == 'AirportItlwm.kext')
+            self.assertEqual(airport['MinKernel'], '24.0.0')
+            self.assertEqual(airport['MaxKernel'], '24.99.99')
 
     def test_tahoe_payload_tampering_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:

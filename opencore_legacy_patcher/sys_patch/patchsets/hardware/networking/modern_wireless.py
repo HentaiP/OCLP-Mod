@@ -32,7 +32,7 @@ class ModernWireless(BaseHardware):
         Targeting Modern Wireless
         """
         intel_present = (
-            self._xnu_major >= os_data.sequoia.value
+            self._xnu_major in (os_data.sequoia.value, os_data.tahoe.value)
             and isinstance(self._computer.wifi, device_probe.IntelWirelessCard)
             and self._computer.wifi.chipset == device_probe.IntelWirelessCard.Chipsets.IntelWirelessIDs
         )

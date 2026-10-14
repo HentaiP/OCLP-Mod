@@ -7,12 +7,15 @@
 - PatcherSupportPkg 2.0.3, official Universal-Binaries.dmg SHA256:
   `cf2a80deafe153ed4a9aa32c63463032e02718f32713e9b3f0a6e09f9a6ffbab`.
 - KGP AirportItlwm-Tahoe formal 1.0.0 on Darwin 25 build hosts; Ventura 2.3.0
-  on older build hosts. Matchers are the same 87 IDs; BE200 is not included.
+  on Sequoia/Darwin 24 build hosts. Matchers are the same 87 IDs; BE200 is not included.
 - IntelBluetoothFirmware / IntelBTPatcher 2.5.0 fixed; BlueToolFixup 2.7.2 baseline.
 - Exact archive versions and hashes: `payloads/Kexts/Intel/manifest.json`.
 
 The selected profile depends on the host kernel. It does not infer another
 machine's installation OS. KGP injection is gated to Darwin 25.0.0–25.99.99.
+The Sequoia profile is gated to Darwin 24.0.0–24.99.99. Other build-host kernels
+are rejected; Intel root-patch eligibility and networking security defaults are
+also restricted to these two known kernels. Broadcom rules are unchanged.
 
 ## Integration and guardrails
 
